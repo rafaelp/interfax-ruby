@@ -31,4 +31,39 @@ describe "Interfax" do
       interfax.client.wsdl.document.should == "https://ws.interfax.net/dfs.asmx?WSDL"
     end
   end
+  describe "#start_file_upload" do
+    context "authorized" do
+      let(:interfax) { Interfax.new(:username => 'rafael_lima', :password => 'not') }
+      it "should assign session_id" do
+        VCR.use_cassette('start_file_upload_authorized') do
+          interfax.start_file_upload
+          interfax.instance_variable_get(:@session_id).should == "2FE69E6C86DB4CB4926A94E63B68039AD83BCBB7F10C407F9641FEAEF5EA38EE"
+        end
+      end
+      it "should return true" do
+        VCR.use_cassette('start_file_upload_authorized') do
+          interfax.start_file_upload.should be_true
+        end
+      end
+      it "should cache session id and not request twice" do
+        interfax.should_receive(:request).once.and_return(mock("Response", :success? => true, :to_hash => {:start_file_upload_response => {:start_file_upload_result => "1", :session_id => "2FE69E6C86DB4CB4926A94E63B68039AD83BCBB7F10C407F9641FEAEF5EA38EE"}}))
+        VCR.use_cassette('start_file_upload_authorized') do
+          2.times { interfax.start_file_upload }
+        end
+      end
+    end
+    context "unauthorized" do
+      it "should return false" do
+        VCR.use_cassette('start_file_upload_unauthorized') do
+          interfax.start_file_upload.should be_false
+        end
+      end
+      it "should not assign session_id" do
+        VCR.use_cassette('start_file_upload_unauthorized') do
+          interfax.start_file_upload
+          interfax.instance_variable_get(:@session_id).should be_nil
+        end
+      end
+    end
+  end
 end
