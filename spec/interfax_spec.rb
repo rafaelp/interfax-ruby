@@ -33,7 +33,7 @@ describe "Interfax" do
   end
   describe "#start_file_upload" do
     context "authorized" do
-      let(:interfax) { Interfax.new(:username => 'rafael_lima', :password => 'not') }
+      let(:interfax) { Interfax.new(:username => 'rafael_lima', :password => ENV['INTERFAX_PASSWORD_FOR_RSPEC']) }
       it "should assign session_id" do
         VCR.use_cassette('start_file_upload_authorized') do
           interfax.start_file_upload
