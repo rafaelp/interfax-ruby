@@ -119,4 +119,40 @@ describe "Interfax" do
       end
     end
   end
+  describe "#sendfax_ex_2" do
+    context "without options" do
+      it "should set default values" do
+        interfax.should_receive(:request).with(:sendfax_ex_2, {
+          :retries_to_perform => 1,
+          :page_size => 'A4',
+          :page_orientation => 'Portrait',
+          :is_high_resolution => 0,
+          :is_fine_rendering => 1,
+        })
+        interfax.sendfax_ex_2
+      end
+      context "with file uploaded" do
+        before(:each) do
+          VCR.use_cassette('start_file_upload_authorized') do
+            interfax.start_file_upload
+          end
+          VCR.use_cassette('upload_file_chunk_authorized') do
+            interfax.upload_file_chunk(File.join('spec','fixtures','mickey01.jpg'), :chunk_size => 40960).should be_true
+          end
+        end
+        it "should set default values" do
+          interfax.should_receive(:request).with(:sendfax_ex_2, {
+            :file_types => 'JPG',
+            :file_sizes => "68702/sessionID=#{session_id}",
+            :retries_to_perform => 1,
+            :page_size => 'A4',
+            :page_orientation => 'Portrait',
+            :is_high_resolution => 0,
+            :is_fine_rendering => 1,
+          })
+          interfax.sendfax_ex_2
+        end
+      end
+    end
+  end
 end
