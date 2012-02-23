@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "interfax-ruby"
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rafael Lima"]
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "interfax-ruby.gemspec",
     "lib/interfax.rb",
     "spec/fixtures/mickey01.jpg",
     "spec/fixtures/vcr_cassettes/cancel_file_upload.yml",
