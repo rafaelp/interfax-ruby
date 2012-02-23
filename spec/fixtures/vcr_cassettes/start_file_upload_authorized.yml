@@ -11,7 +11,7 @@
       message: OK
     headers:
       date:
-      - Wed, 22 Feb 2012 18:43:28 GMT
+      - Thu, 23 Feb 2012 01:18:22 GMT
       server:
       - Microsoft-IIS/6.0
       iisexport:
@@ -1483,7 +1483,7 @@
       message: OK
     headers:
       date:
-      - Wed, 22 Feb 2012 18:43:59 GMT
+      - Thu, 23 Feb 2012 01:18:29 GMT
       server:
       - Microsoft-IIS/6.0
       iisexport:
@@ -1501,5 +1501,5 @@
       - '463'
     body: <?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><StartFileUploadResponse
-      xmlns="http://www.interfax.cc"><StartFileUploadResult>0</StartFileUploadResult><SessionID>2FE69E6C86DB4CB4926A94E63B68039AD83BCBB7F10C407F9641FEAEF5EA38EE</SessionID></StartFileUploadResponse></soap:Body></soap:Envelope>
+      xmlns="http://www.interfax.cc"><StartFileUploadResult>0</StartFileUploadResult><SessionID>D32EFA4297184BDF92A8393CB891F137B758A945F1D54E48869046799928C965</SessionID></StartFileUploadResponse></soap:Body></soap:Envelope>
     http_version: '1.1'
