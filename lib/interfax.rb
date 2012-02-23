@@ -5,6 +5,7 @@ class Interfax
   def initialize(options = {})
     @username = options[:username] || ENV['INTERFAX_USERNAME']
     @password = options[:password] || ENV['INTERFAX_PASSWORD']
+    @raw_response = {}
     Gyoku.convert_symbols_to(:camelcase)
   end
 
@@ -13,18 +14,26 @@ class Interfax
   end
 
   def start_file_upload
-    return true unless @session_id.nil?
-    response = request :start_file_upload
-    return false unless response.success?
-    result = response.to_hash[:start_file_upload_response][:start_file_upload_result].to_i
-    if result >= 0
-      @session_id = response.to_hash[:start_file_upload_response][:session_id]
+    return true if !@session_id.nil?
+    request :start_file_upload do |response|
+      @session_id = response[:session_id]
     end
-    return !@session_id.nil?
+  end
+
+  def cancel_file_upload
+    return if @session_id.nil?
+    request :cancel_file_upload, { :session_id => @session_id }
   end
 
   private
-  def request(method_name, params = {})
-    client.request :int, method_name, {:body => {:username => @username, :password => @password}.merge(params)}
+  def request(method_name, params = {}, &block)
+    if @raw_response[method_name].nil?
+      @raw_response[method_name] = client.request :int, method_name, {:body => {:username => @username, :password => @password}.merge(params)}
+    end
+    return false unless @raw_response[method_name].success?
+    result = @raw_response[method_name].to_hash["#{method_name}_response".to_sym]["#{method_name}_result".to_sym].to_i
+    response = @raw_response[method_name].to_hash["#{method_name}_response".to_sym]
+    yield response if block_given?
+    return result >= 0
   end
 end
