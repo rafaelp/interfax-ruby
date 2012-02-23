@@ -2,6 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Interfax" do
   let(:session_id) { "D32EFA4297184BDF92A8393CB891F137B758A945F1D54E48869046799928C965" }
+  let(:file_name) { File.join('spec','fixtures','mickey01.jpg') }
   before(:each) do
     ENV['INTERFAX_USERNAME'] = 'defaultusername'
     ENV['INTERFAX_PASSWORD'] = 'defaultpassword'
@@ -73,14 +74,14 @@ describe "Interfax" do
         it "should call start_file_upload" do
           interfax.should_receive(:start_file_upload)
           interfax.stub(:request)
-          interfax.upload_file_chunk(File.join('spec','fixtures','mickey01.jpg'))
+          interfax.upload_file_chunk(file_name)
         end
       end
       context "session id is passed" do
         it "should not call start_file_upload" do
           interfax.should_not_receive(:start_file_upload)
           interfax.stub(:request)
-          interfax.upload_file_chunk(File.join('spec','fixtures','mickey01.jpg'), :session_id => session_id)
+          interfax.upload_file_chunk(file_name, :session_id => session_id)
         end
       end
     end
@@ -93,18 +94,18 @@ describe "Interfax" do
       it "should not call start_file_upload" do
         interfax.should_not_receive(:start_file_upload)
         interfax.stub(:request)
-        interfax.upload_file_chunk(File.join('spec','fixtures','mickey01.jpg'))
+        interfax.upload_file_chunk(file_name)
       end
       context "authorized" do
         let(:interfax) { Interfax.new(:username => 'rafael_lima', :password => ENV['INTERFAX_PASSWORD_FOR_RSPEC']) }
         it "should return true" do
           VCR.use_cassette('upload_file_chunk_authorized') do
-            interfax.upload_file_chunk(File.join('spec','fixtures','mickey01.jpg'), :chunk_size => 40960).should be_true
+            interfax.upload_file_chunk(file_name, :chunk_size => 40960).should be_true
           end
         end
         it "should request twice" do
           interfax.client.should_receive(:request).twice.and_return(mock("Response", :success? => true, :to_hash => {:upload_file_chunk_response => {:upload_file_chunk_result => "68702"}}))
-          interfax.upload_file_chunk(File.join('spec','fixtures','mickey01.jpg'), :chunk_size => 40960).should be_true
+          interfax.upload_file_chunk(file_name, :chunk_size => 40960).should be_true
         end
       end
     end
@@ -138,38 +139,60 @@ describe "Interfax" do
     end
   end
   describe "#sendfax_ex_2" do
-    context "with file uploaded" do
-      before(:each) do
-        VCR.use_cassette('start_file_upload_authorized') do
-          interfax.start_file_upload
+    context "authorized" do
+      let(:interfax) { Interfax.new(:username => 'rafael_lima', :password => ENV['INTERFAX_PASSWORD_FOR_RSPEC']) }
+      context "with file uploaded" do
+        before(:each) do
+          VCR.use_cassette('start_file_upload_authorized') do
+            interfax.start_file_upload
+          end
+          VCR.use_cassette('upload_file_chunk_authorized') do
+            interfax.upload_file_chunk(file_name, :chunk_size => 40960).should be_true
+          end
         end
-        VCR.use_cassette('upload_file_chunk_authorized') do
-          interfax.upload_file_chunk(File.join('spec','fixtures','mickey01.jpg'), :chunk_size => 40960).should be_true
+        it "should set default values" do
+          interfax.should_receive(:request).with(:sendfax_ex_2, {
+            :file_types => 'JPG',
+            :file_sizes => "68702/sessionID=#{session_id}",
+            :retries_to_perform => 1,
+            :page_size => 'A4',
+            :page_orientation => 'Portrait',
+            :is_high_resolution => 0,
+            :is_fine_rendering => 1,
+          })
+          interfax.sendfax_ex_2
         end
       end
-      it "should set default values" do
-        interfax.should_receive(:request).with(:sendfax_ex_2, {
-          :file_types => 'JPG',
-          :file_sizes => "68702/sessionID=#{session_id}",
-          :retries_to_perform => 1,
-          :page_size => 'A4',
-          :page_orientation => 'Portrait',
-          :is_high_resolution => 0,
-          :is_fine_rendering => 1,
-        })
-        interfax.sendfax_ex_2
+      context "without file uploaded" do
+        it "should set default values" do
+          interfax.should_receive(:request).with(:sendfax_ex_2, {
+            :retries_to_perform => 1,
+            :page_size => 'A4',
+            :page_orientation => 'Portrait',
+            :is_high_resolution => 0,
+            :is_fine_rendering => 1,
+          })
+          interfax.sendfax_ex_2
+        end
       end
-    end
-    context "without file uploaded" do
-      it "should set default values" do
-        interfax.should_receive(:request).with(:sendfax_ex_2, {
-          :retries_to_perform => 1,
-          :page_size => 'A4',
-          :page_orientation => 'Portrait',
-          :is_high_resolution => 0,
-          :is_fine_rendering => 1,
-        })
-        interfax.sendfax_ex_2
+      context "with default values" do
+        it "should return error code" do
+          VCR.use_cassette('sendfax_ex_2_authorized_default_values') do
+            interfax.sendfax_ex_2.should == -1007
+          end
+        end
+      end
+      context "with required values" do
+        it "should return error code" do
+          VCR.use_cassette('sendfax_ex_2_authorized_required_values') do
+            interfax.sendfax_ex_2({
+              :fax_numbers => '+55-21-35531898',
+              :files_data => Base64.encode64(File.read(file_name)),
+              :file_types => 'JPG',
+              :file_sizes => File.size(file_name),
+            }).should == 257489542
+          end
+        end
       end
     end
   end
