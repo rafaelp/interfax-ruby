@@ -32,7 +32,7 @@ class Interfax
         :session_ID => @session_id,
         :is_last => is_last ? 1 : 0
       } do |response, result|
-        @bytes_uploaded = result.to_i
+        @bytes_uploaded = result
       end
     end
     return @bytes_uploaded == File.size(@file_path)
@@ -68,7 +68,7 @@ class Interfax
     return false unless raw_response.success?
     result = raw_response.to_hash["#{method_name}_response".to_sym]["#{method_name}_result".to_sym].to_i
     response = raw_response.to_hash["#{method_name}_response".to_sym]
-    return result >= 0 unless block_given?
+    return result unless block_given?
     yield response, result
   end
 

@@ -119,7 +119,7 @@ describe "Interfax" do
       context "session id is passed" do
         it "should return true" do
           VCR.use_cassette('cancel_file_upload_with_session') do
-            interfax.cancel_file_upload(:session_id => session_id).should be_true
+            interfax.cancel_file_upload(:session_id => session_id).should == 0
           end
         end
       end
@@ -132,7 +132,7 @@ describe "Interfax" do
       end
       it "should return true" do
         VCR.use_cassette('cancel_file_upload') do
-          interfax.cancel_file_upload.should be_true
+          interfax.cancel_file_upload.should == 0
         end
       end
     end
