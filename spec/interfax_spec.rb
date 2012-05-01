@@ -83,6 +83,15 @@ describe "Interfax" do
           interfax.stub(:request)
           interfax.upload_file_chunk(file_name, :session_id => session_id)
         end
+        it "should call request with correct params" do
+          interfax.should_receive(:request).with(:upload_file_chunk, {
+            :chunk => anything(),
+            :session_ID => session_id,
+            :is_last => 1
+          })
+          interfax.upload_file_chunk(file_name, :session_id => session_id)        
+        end
+        
       end
     end
     context "start_file_upload was called before" do
