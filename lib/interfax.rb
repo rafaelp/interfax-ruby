@@ -29,8 +29,8 @@ class Interfax
     each_chunk(chunk_size) do |chunk, is_last|
       request :upload_file_chunk, {
         :chunk => Base64.encode64(chunk),
-        :session_ID => session_id,
-        :is_last => is_last ? 1 : 0
+        :SessionID => session_id,
+        :IsLast => is_last ? 1 : 0
       } do |response, result|
         @bytes_uploaded = result
       end

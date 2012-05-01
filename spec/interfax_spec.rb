@@ -86,8 +86,8 @@ describe "Interfax" do
         it "should call request with correct params" do
           interfax.should_receive(:request).with(:upload_file_chunk, {
             :chunk => anything(),
-            :session_ID => session_id,
-            :is_last => 1
+            :SessionID => session_id,
+            :IsLast => 1
           })
           interfax.upload_file_chunk(file_name, :session_id => session_id)        
         end
