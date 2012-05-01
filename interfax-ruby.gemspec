@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "interfax-ruby"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rafael Lima"]
-  s.date = "2012-02-23"
+  s.date = "2012-05-01"
   s.description = "Ruby wrapper based on savon for Interfax SOAP API"
   s.email = "contato@rafael.adm.br"
   s.extra_rdoc_files = [
