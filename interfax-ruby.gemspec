@@ -9,12 +9,12 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rafael Lima"]
-  s.date = "2012-05-01"
+  s.date = "2013-03-14"
   s.description = "Ruby wrapper based on savon for Interfax SOAP API"
   s.email = "contato@rafael.adm.br"
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.md"
   ]
   s.files = [
     ".document",
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
-    "README.rdoc",
+    "README.md",
     "Rakefile",
     "VERSION",
     "interfax-ruby.gemspec",
@@ -44,7 +44,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/rafaelp/interfax-ruby"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.24"
   s.summary = "Ruby wrapper based on savon for Interfax SOAP API"
 
   if s.respond_to? :specification_version then
