@@ -1,6 +1,8 @@
 # Ruby Gem for Interfax SOAP API
 
-This is a ruby wrapper to Interfax.net SOAP API.
+This is a ruby wrapper to send fax using [Interfax](http://www.interfax.net/)
+
+API Reference: [Outbound Fax SOAP API](http://www.interfax.net/en/dev/webservice/reference)
 
 ## Install
 
